@@ -1,0 +1,29 @@
+# actions only work with macOS
+# Tester
+- hosts: localhost
+  become: true
+  tasks:
+  - name: Elixir Install
+    # shell module runs command through a shell on the remote node
+    # for windows targets use: ansible.windows.win_shell
+    ansible.builtin.shell: asdf plugin-add erlang
+    register: elixirinstall
+
+  - name: Erlang Install
+    ansible.builtin.shell: asdf plugin-add elixir
+    register: erlanginstall
+
+  - name: export kerl config options
+    ansible.builtin.shell: export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl)"
+
+  - name: asdf install
+    ansible.builtin.shell: asdf install
+    register: asdfinstall
+
+  # set env variables in .bashprofile
+  - name: export api_host
+    ansible.builtin.shell: export API_HOST="http://localhost:3030"
+    
+  - name: export api_host_test
+    ansible.builtin.shell: export API_HOST_TEST="http://localhost:3030"
+    
