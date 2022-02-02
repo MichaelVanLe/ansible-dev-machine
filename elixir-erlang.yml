@@ -8,15 +8,15 @@
     private: yes
 
   tasks:
-  - name: Elixir Install
+  - name: Erlang Install
     # shell module runs command through a shell on the remote node
     # for windows targets use: ansible.windows.win_shell
     ansible.builtin.shell: asdf plugin-add erlang
-    register: elixirinstall
-
-  - name: Erlang Install
-    ansible.builtin.shell: asdf plugin-add elixir
     register: erlanginstall
+
+  - name: Elixir Install
+    ansible.builtin.shell: asdf plugin-add elixir
+    register: elixirinstall
 
   - name: export kerl config options
     ansible.builtin.shell: export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl)"
@@ -32,3 +32,5 @@
   - name: export api_host_test
     ansible.builtin.shell: export API_HOST_TEST="http://localhost:3030"
     
+# install fails and stops when there is an error.
+# current error: "stderr": "Plugin named erlang already added"

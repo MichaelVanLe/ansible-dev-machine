@@ -1,0 +1,24 @@
+# install Java 1.8 SDK
+- hosts: localhost
+  
+  vars_prompt:
+  - name: password
+    prompt: what is your password?
+    private: yes
+
+  tasks:
+  - name: add java plugin
+    ansible.builtin.shell: asdf plugin-add java
+    register: javaplugin
+
+  - name: list all java versions available on asdf
+    ansible.builtin.shell: asdf list-all java
+    register: listalljava
+
+  - name: install java adpotopenjdk 8
+    ansible.builtin.shell: asdf install java adoptopenjdk-8.0.302+8
+    register: javainstalljdk8
+
+  - name: globabl java jdk 8
+    ansible.builtin.shell: asdf global java adoptopenjdk-8.0.302+8
+    register: javaglobaljdk8
