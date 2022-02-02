@@ -1,7 +1,12 @@
 # actions only work with macOS
 # Tester
 - hosts: localhost
-  become: true
+  
+  vars_prompt:
+  - name: password
+    prompt: what is your password?
+    private: yes
+
   tasks:
   - name: Elixir Install
     # shell module runs command through a shell on the remote node
