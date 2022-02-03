@@ -1,4 +1,4 @@
-# install Java 1.8 SDK
+# Step 4.3: install Java 1.8 SDK
 # should install Java 8 prior to running ansible-playbook
 - hosts: localhost
   

@@ -1,3 +1,4 @@
+# Setp 4.2: Install Elixir and Erlang
 # actions only work with macOS
 # Tester
 - hosts: localhost

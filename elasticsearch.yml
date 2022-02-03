@@ -1,3 +1,4 @@
+# Step 5: Install ElasticSearch via Homebrew
 # Elasticsearch v2.4 is outdated but version is required
 - hosts: localhost
 
