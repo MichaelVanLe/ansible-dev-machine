@@ -1,0 +1,48 @@
+# Elasticsearch v2.4 is outdated but version is required
+- hosts: localhost
+
+  vars_prompt:
+  - name: password
+    prompt: what is your password?
+    private: yes
+
+  tasks:
+  - name: brew update and upgrade
+    ansible.builtin.shell: brew update && brew upgrade
+
+  - name: wget install openjdk@8
+    ansible.builtin.shell: brew install wget openjdk@8
+
+  - name: cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/Formula
+    ansible.builtin.shell: cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/Formula
+
+  - name: wget https://raw.githubusercontent.com/Homebrew/homebrew-core/e0150beaa35662146cd4f07dcf0e6a13586a2748/Formula/elasticsearch%402.4.rb
+    ansible.builtin.shell: wget https://raw.githubusercontent.com/Homebrew/homebrew-core/e0150beaa35662146cd4f07dcf0e6a13586a2748/Formula/elasticsearch%402.4.rb
+
+  - name: sed -e "s/bottle/\#bottle/g" -i '' elasticsearch@2.4.rb
+    ansible.builtin.shell: sed -e "s/bottle/\#bottle/g" -i '' elasticsearch@2.4.rb
+
+  - name: sed -e "s/deprecate/\#deprecate/g" -i '' elasticsearch@2.4.rb
+    ansible.builtin.shell: sed -e "s/deprecate/\#deprecate/g" -i '' elasticsearch@2.4.rb
+
+  - name: sed -e "s/depends_on \:java => \"1.8\"/\#depends_on \"adoptopenjdk8@8\"/g" -i '' elasticsearch@2.4.rb
+    ansible.builtin.shell: sed -e "s/depends_on \:java => \"1.8\"/\#depends_on \"adoptopenjdk8@8\"/g" -i '' elasticsearch@2.4.rb
+
+  # task failing here
+  - name: elasticsearch@2.4 install
+    ansible.builtin.shell: brew install --build-from-source elasticsearch@2.4
+    register: elasticsearchinstall
+
+  # for zsh. Change to shell's file as appropriate
+  - name: echo 'export PATH="/usr/local/opt/elasticsearch@2.4/bin:$PATH"' >> ~/.zshrc
+    ansible.builtin.shell: echo 'export PATH="/usr/local/opt/elasticsearch@2.4/bin:$PATH"' >> ~/.zshrc
+
+  - name: start elasticsearch@2.4
+    ansible.builtin.shell: brew services start elasticsearch@2.4
+
+  - name: cd root
+    ansible.builtin.shell: cd ~/
+
+  # Check that ElasticSearch 2.4 is running
+  - name: check elasticsearch running
+    ansible.builtin.shell: brew services
