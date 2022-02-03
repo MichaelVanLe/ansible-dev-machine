@@ -28,7 +28,10 @@
   - name: sed -e "s/depends_on \:java => \"1.8\"/\#depends_on \"adoptopenjdk8@8\"/g" -i '' elasticsearch@2.4.rb
     ansible.builtin.shell: sed -e "s/depends_on \:java => \"1.8\"/\#depends_on \"adoptopenjdk8@8\"/g" -i '' elasticsearch@2.4.rb
 
-  # task failing here
+  # task failing here. v2.4 no longer available??
+  # No available formula with name "elasticsearch@2.4"
+  # brew search elasticsearch --> elasticsearch / elasticsearch@6
+  # No longer able to brew install
   - name: elasticsearch@2.4 install
     ansible.builtin.shell: brew install --build-from-source elasticsearch@2.4
     register: elasticsearchinstall
