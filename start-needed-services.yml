@@ -1,0 +1,20 @@
+# Start needed services
+- hosts: localhost
+
+  vars_prompt: 
+  - name: password
+    prompt: what is your password?
+    private: yes
+
+  tasks:
+  - name: mysql@5.6 start
+    ansible.builtin.shell: brew services start mysql@5.6
+
+  - name: redis start
+    ansible.builtin.shell: brew services start redis
+
+  - name: memcached start
+    ansible.builtin.shell: brew services start memcached
+
+  - name: elasticsearch@2.4 start
+    ansible.builtin.shell: brew services start elasticsearch@2.4
