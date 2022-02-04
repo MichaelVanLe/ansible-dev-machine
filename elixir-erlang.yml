@@ -42,3 +42,7 @@
     
 # install fails and stops when there is an error.
 # current error: "stderr": "Plugin named erlang already added"
+
+# run a check to see if it's installed or suppress errors
+# run 'elixir -v' and set it as a variable (register)
+# The way you solve is not as imp as the result
