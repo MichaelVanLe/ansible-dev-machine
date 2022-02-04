@@ -25,13 +25,16 @@
     ignore_errors: yes
 
   # failed - asdf_22.3 is not a kerl-managed Erlang/OTP installation
+  # 22.3.1 is the earliest version that can be installed through kerl/asdf.
   - name: erlang install
     ansible.builtin.shell: asdf install erlang 22.3.1
     register: erlanginstall
+    ignore_errors: yes
 
   - name: elixir install
-    ansible.builtin.shell: asdf install elixir 1.10.6
+    ansible.builtin.shell: asdf install elixir 1.10.3
     register: elixirinstall
+    ignore_errors: yes
 
   - name: list all erlang
     ansible.builtin.shell: asdf list-all erlang
