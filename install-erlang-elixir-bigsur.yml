@@ -1,0 +1,37 @@
+- hosts: localhost
+
+  vars_prompt:
+  - name: password
+    prompt: What is your password?
+    private: yes
+
+  tasks:
+  # to be run in app directory
+  # not working: 'No such file or directory'
+  - name: get current vesions
+    ansible.builtin.shell: cat .tools-version
+    # need to register current version data as variable to later access
+    ignore_errors: yes
+
+# Erlang
+  - name: set env variable
+    ansible.builtin.shell:  export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl)"
+
+  # failed - syntax error
+  # went to link and copied install. Difference - removed angle brackets
+  # failed - new failure, plugin named erlang already added
+  - name: add erlang plugin to asdf
+    ansible.builtin.shell: asdf plugin add erlang https://github.com/asdf-vm/asdf-erlang.git
+    ignore_errors: yes
+
+  # failed - asdf_22.3 is not a kerl-managed Erlang/OTP installation
+  - name: erlang install
+    ansible.builtin.shell: asdf install erlang 22.3.1
+    register: erlanginstall
+
+  - name: elixir install
+    ansible.builtin.shell: asdf install elixir 1.10.6
+    register: elixirinstall
+
+  - name: list all erlang
+    ansible.builtin.shell: asdf list-all erlang
