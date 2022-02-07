@@ -1,3 +1,5 @@
+# Step 4.2 continued - Install Erlang & Elixir on bigsur
+
 - hosts: localhost
 
   vars_prompt:
@@ -26,6 +28,7 @@
 
   # failed - asdf_22.3 is not a kerl-managed Erlang/OTP installation
   # 22.3.1 is the earliest version that can be installed through kerl/asdf.
+  # changed 22.3 --> 22.3.1
   - name: erlang install
     ansible.builtin.shell: asdf install erlang 22.3.1
     register: erlanginstall

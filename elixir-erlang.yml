@@ -13,18 +13,30 @@
   # - name: Show facts available on the system
   #   ansible.builtin.debug:
   #     var: ansible_facts
+
+  - name: list installed plugins
+    ansible.builtin.shell: asdf plugin list
+    register: pluginlist
+    
+  - name: print installed plugins
+    ansible.builtin.debug:
+      msg: List of installed plugins {{ pluginlist }}
+
   - name: Erlang Install
     # shell module runs command through a shell on the remote node
     # for windows targets use: ansible.windows.win_shell
     ansible.builtin.shell: asdf plugin-add erlang
     # ignores errors
-    ignore_errors: yes
+    # ignore_errors: yes
     register: erlanginstall
+    # execute comment if erlang not found in installed plugins list
+    when: pluginlist.stdout.find('erlang') == -1
 
   - name: Elixir Install
     ansible.builtin.shell: asdf plugin-add elixir
-    ignore_errors: yes
+    # ignore_errors: yes
     register: elixirinstall
+    when: pluginlist.stdout.find('elixir') == -1
 
   - name: export kerl config options
     ansible.builtin.shell: export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl)"
@@ -46,3 +58,7 @@
 # run a check to see if it's installed or suppress errors
 # run 'elixir -v' and set it as a variable (register)
 # The way you solve is not as imp as the result
+
+# if non zero result than this or maybe find out what rc 2 is. If plugin already
+# installed then we want to continue/skip/ignore
+# need to use a when
