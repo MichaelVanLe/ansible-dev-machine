@@ -17,7 +17,13 @@
   - name: list installed plugins
     ansible.builtin.shell: asdf plugin list
     register: pluginlist
-    
+    # can't run conditional on plugin that doesn't exist (plugin undefined)
+    # ran for first time when 'or pluginlist.rc !=0' doesn't run again after initial
+    # failed_when: pluginlist.stderr.find('No plugins installed') == -1
+    # failed_when: "'' in pluginlist.stderr"
+    # goal is to have it fail never. Fails when doesn't say 'No plugins installed' and pluginlist.rc !=0 
+    failed_when: pluginlist.stderr.find('No plugins installed') == -1 and pluginlist.rc != 0
+
   - name: print installed plugins
     ansible.builtin.debug:
       msg: List of installed plugins {{ pluginlist }}
