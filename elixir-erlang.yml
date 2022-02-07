@@ -47,9 +47,12 @@
   - name: export kerl config options
     ansible.builtin.shell: export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl)"
 
+  # failed - only on replacement MacBook Pro
   - name: asdf install
     ansible.builtin.shell: asdf install
     register: asdfinstall
+    # temporary ignore_errors
+    ignore_errors: yes
 
   # set env variables in .bashprofile
   - name: export api_host

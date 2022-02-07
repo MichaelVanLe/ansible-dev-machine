@@ -23,3 +23,6 @@
   - name: globabl java jdk 8
     ansible.builtin.shell: asdf global java adoptopenjdk-8.0.302+8
     register: javaglobaljdk8
+
+# Notes:
+# ansible-playbook ran this seamlessly on replacement macbook pro
