@@ -52,7 +52,7 @@
     ansible.builtin.shell: asdf install
     register: asdfinstall
     # temporary ignore_errors
-    ignore_errors: yes
+    # ignore_errors: yes
 
   # set env variables in .bashprofile
   - name: export api_host

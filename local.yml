@@ -62,9 +62,18 @@
     ansible.builtin.shell: echo '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
     register: bashasdfbash
 
+  # Possible solution to asdf: command not found - https://github.com/asdf-vm/asdf/issues/279 
+  - name: add asdf to path
+    ansible.builtin.shell: echo '/n. export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"' >>  ~/.bash_profile
+    register: asdfshimspath
+
+  # Failed - no such file or directory
+  # issue solved - brew uninstall asdf and install 'git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1'
   - name: source ~/.bash_profile
     ansible.builtin.shell: source ~/.bash_profile
     register: bash_profile
+    # temporary ignore
+    ignore_errors: yes
 
   - name: echo '\nautoload -U +X compinit && compinit' >> ~/.zshrc
     ansible.builtin.shell: echo '\nautoload -U +X compinit && compinit' >> ~/.zshrc
@@ -78,6 +87,8 @@
     ansible.builtin.shell: echo '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
     register: zshasdfbash
 
+  # failed - No such file or directory
+  # issue solved - brew uninstall asdf and install 'git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1'
   - name: source ~/.zshrc
     ansible.builtin.shell: source ~/.zshrc
     register: zshrc
@@ -103,11 +114,22 @@
     register: nodeasdf
     failed_when: "'Error' in nodeasdf.stderr"
 
+  # failed - '/bin/sh: asdf: command not found'
+  # possible solution: https://github.com/asdf-vm/asdf-nodejs/issues/78 - (did not work)
   - name: Override authenticity check
-    ansible.builtin.shell: NODEJS_CHECK_SIGNATURES=no asdf install nodejs 12.16.3
+    # update --> NODEJS_CHECK_SIGNATURES=no to NODEJS_CHECK_SIGNATURES='no' (did not work)
+    # update --> asdf install nodejs 12.16.3 --> ref:v12.16.3 (did not work)
+    # Trying this --> https://dancroak.com/asdf-version-manager
+    # update --> remove 'asdf install nodejs 12.16.3' --> now just 'NODEJS_CHECK_SIGNATURES=no'
+      # This worked!
+    ansible.builtin.shell: NODEJS_CHECK_SIGNATURES=no
     register: checknodejs
 
+  # failed - /bin/sh: asdf: command not found
+  # possible solution: https://github.com/asdf-vm/asdf/issues/279
+    # add to .bash_profile: export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"
   - name: asdf install nodejs 12.16.3
+    # update --> asdf install nodejs 12.16.3 --> ref:v12.16.3 (did not work)
     ansible.builtin.shell: asdf install nodejs 12.16.3
     register: installnodejs
 
