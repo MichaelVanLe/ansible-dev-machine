@@ -63,9 +63,12 @@
     register: bashasdfbash
 
   # Possible solution to asdf: command not found - https://github.com/asdf-vm/asdf/issues/279 
-  - name: add asdf to path
-    ansible.builtin.shell: echo '/n. export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"' >>  ~/.bash_profile
-    register: asdfshimspath
+  # Causing next step to fail 
+  # - name: add asdf to path
+  #   # update --> echo '\n. export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"' >>  ~/.bash_profile (did not work)
+  #   # update --> removing export path: echo '\n. $HOME/.asdf/bin:$HOME/.asdf/shims:$PATH' >>  ~/.bash_profile (did not work)
+  #   ansible.builtin.shell: echo '\n. $HOME/.asdf/bin:$HOME/.asdf/shims:$PATH' >>  ~/.bash_profile
+  #   register: asdfshimspath
 
   # Failed - no such file or directory
   # issue solved - brew uninstall asdf and install 'git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1'
@@ -73,7 +76,7 @@
     ansible.builtin.shell: source ~/.bash_profile
     register: bash_profile
     # temporary ignore
-    ignore_errors: yes
+    # ignore_errors: yes
 
   - name: echo '\nautoload -U +X compinit && compinit' >> ~/.zshrc
     ansible.builtin.shell: echo '\nautoload -U +X compinit && compinit' >> ~/.zshrc
@@ -86,6 +89,12 @@
   - name: echo '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
     ansible.builtin.shell: echo '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
     register: zshasdfbash
+
+  # - name: add asdf to path zshrc
+  #   # update --> echo '\n. export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"' >>  ~/.bash_profile (did not work)
+  #   # update --> removing export path: echo '\n. $HOME/.asdf/bin:$HOME/.asdf/shims:$PATH' >>  ~/.bash_profile (did not work)
+  #   ansible.builtin.shell: echo '\n. $HOME/.asdf/bin:$HOME/.asdf/shims:$PATH' >>  ~/.zshrc
+  #   register: asdfshimspathzshrc
 
   # failed - No such file or directory
   # issue solved - brew uninstall asdf and install 'git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1'
