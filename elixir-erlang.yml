@@ -28,24 +28,56 @@
     ansible.builtin.debug:
       msg: List of installed plugins {{ pluginlist }}
 
-  - name: Erlang Install
+  - name: Erlang plugin add
     # shell module runs command through a shell on the remote node
     # for windows targets use: ansible.windows.win_shell
     ansible.builtin.shell: asdf plugin-add erlang
     # ignores errors
     # ignore_errors: yes
-    register: erlanginstall
+    register: erlangpluginadd
     # execute comment if erlang not found in installed plugins list
     when: pluginlist.stdout.find('erlang') == -1
 
-  - name: Elixir Install
+  - name: Elixir plugin add
     ansible.builtin.shell: asdf plugin-add elixir
     # ignore_errors: yes
-    register: elixirinstall
+    register: elixirpluginadd
     when: pluginlist.stdout.find('elixir') == -1
 
   - name: export kerl config options
     ansible.builtin.shell: export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl)"
+
+  # get macos version since Erlang different install process catalina vs big sur
+  # if version 11 or greater --> big sur
+  - name: get macOS version
+    ansible.builtin.shell: sw_vers -productVersion
+    register: osversion
+
+  - name: print macOS version
+    ansible.builtin.debug:
+      msg: macOS Version {{ osversion.stdout_lines }}
+
+  # match start of string with 11 - https://docs.ansible.com/ansible/latest/user_guide/playbooks_tests.html#testing-strings
+  - name: is os big sur?
+    ansible.builtin.debug:
+      msg: I am OS Big Sur Version
+    # give it the ol' double escape \\
+    when: osversion.stdout_lines is match("\\['11.")
+
+# do this if os version is Big Sur
+  # - name: big sur install erlang
+  #   ansible.builtin.shell:
+
+  - name: erlang install
+    ansible.builtin.shell: asdf install erlang 22.3
+    register: erlanginstall
+    ignore_errors: yes
+    # when: osversion > 11
+
+  - name: elixir install
+    ansible.builtin.shell: asdf install elixir 1.10.3
+    register: elixirinstall
+    ignore_errors: yes
 
   # failed - only on replacement MacBook Pro
   - name: asdf install
