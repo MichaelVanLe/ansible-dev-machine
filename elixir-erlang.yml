@@ -45,7 +45,10 @@
     when: pluginlist.stdout.find('elixir') == -1
 
   - name: export kerl config options
-    ansible.builtin.shell: export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl)"
+    # replace following 
+    # ansible.builtin.shell: export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl)"
+    # with this below openssl@1.1
+    ansible.builtin.shell: export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl@1.1)"
 
   # get macos version since Erlang different install process catalina vs big sur
   # if version 11 or greater --> big sur
@@ -64,15 +67,24 @@
     # give it the ol' double escape \\
     when: osversion.stdout_lines is match("\\['11.")
 
-# do this if os version is Big Sur
-  # - name: big sur install erlang
-  #   ansible.builtin.shell:
+  # erlang 22.3 can only be installed with autoconf@2.6
+  - name: install autoconf@2.69
+    ansible.builtin.shell: brew install autoconf@2.69
+    when: osversion.stdout_lines is match("\\['11.")
 
-  - name: erlang install
+  - name: brew link autoconf@2.69
+    ansible.builtin.shell: brew link --overwrite autoconf@2.69
+    when: osversion.stdout_lines is match("\\['11.")
+
+  - name: erlang install on Big Sur
+    ansible.builtin.shell: asdf install erlang 22.3
+    when: osversion.stdout_lines is match("\\['11.")
+
+  # standard instalation on catalina
+  - name: erlang install on Catalina
     ansible.builtin.shell: asdf install erlang 22.3
     register: erlanginstall
-    ignore_errors: yes
-    # when: osversion > 11
+    when: osversion.stdout_lines is match("\\['10.")
 
   - name: elixir install
     ansible.builtin.shell: asdf install elixir 1.10.3
