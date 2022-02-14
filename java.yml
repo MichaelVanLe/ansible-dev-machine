@@ -8,9 +8,15 @@
     private: yes
 
   tasks:
+  - name: list installed plugins
+    ansible.builtin.shell: asdf plugin list
+    register: pluginlist
+    failed_when: pluginlist.stderr.find('No plugins installed') == -1 and pluginlist.rc != 0
+  
   - name: add java plugin
     ansible.builtin.shell: asdf plugin-add java
     register: javaplugin
+    when: pluginlist.stdout.find('java') == -1
 
   - name: list all java versions available on asdf
     ansible.builtin.shell: asdf list-all java
