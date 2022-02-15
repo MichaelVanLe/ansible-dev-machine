@@ -67,6 +67,7 @@
     # give it the ol' double escape \\
     when: osversion.stdout_lines is match("\\['11.")
 
+  # Follow these steps - https://github.com/asdf-vm/asdf-erlang/issues/195#issuecomment-849110313 
   # erlang 22.3 can only be installed with autoconf@2.6
   - name: install autoconf@2.69
     ansible.builtin.shell: brew install autoconf@2.69
