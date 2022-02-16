@@ -7,12 +7,10 @@
     private: yes
 
   tasks:
-  # failed - You don't have write permissions for the /Library/Ruby/Gems/2.6.0 directory.
-  # - name: RubyGems update
-  #   ansible.builtin.shell: gem update --system
+  - name: RubyGems update
+    ansible.builtin.shell: gem update --system
     register: rubygemsupdate
 
-  # failed - You don't have write permissions for the /Library/Ruby/Gems/2.6.0 directory.
   - name: bundler install
     ansible.builtin.shell: gem install bundler -v 1.17.3
     register: bundlerinstall
