@@ -1,0 +1,29 @@
+# step 11: install Rails and gems for TAS app
+- hosts: localhost
+
+  tasks: 
+  # Configure Bundler Build Options to prevent problems with installing gems
+  # ref: https://bundler.io/man/bundle-config.1.html#BUILD-OPTIONS
+  - name: build libv8
+    ansible.builtin.shell: bundle config --global build.libv8 --with-system-v8
+
+  - name: build therubyracer
+    ansible.builtin.shell: bundle config --global build.therubyracer --with-v8-dir=/usr/local/opt/v8@3.15 --with-openssl-dir=/usr/local/opt/openssl@1.1
+  
+  - name: build mysql2
+    ansible.builtin.shell: bundle config --global build.mysql2 --with-opt-dir=/usr/local/opt/openssl@1.1
+  
+  - name: build ffi
+    ansible.builtin.shell: bundle config --global build.ffi --with-cflags="-Wno-error=implicit-function-declaration"
+  
+  - name: build thin
+    ansible.builtin.shell: bundle config --global build.thin --with-cflags="-Wno-error=implicit-function-declaration"
+  
+  - name: build event machine
+    ansible.builtin.shell: bundle config --global build.eventmachine --with-cppflags="-I/usr/local/opt/openssl@1.1/include"
+  
+  # install rails and gems for your repos
+  - name: cd to repo
+  cd repo_name # e.g. telapp/tas
+  
+  bundle install
