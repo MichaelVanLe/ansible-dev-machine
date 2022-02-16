@@ -1,0 +1,9 @@
+# Step 10: add Localhost aliases
+- hosts: localhost
+
+  tasks:
+  - name: echo "127.0.0.1 mysql mysql-erx redis memcached elasticsearch" | sudo tee -a /etc/hosts
+    ansible.builtin.shell: echo "127.0.0.1 mysql mysql-erx redis memcached elasticsearch" | sudo tee -a /etc/hosts
+  
+  - name: echo "127.0.0.1 admin callcenter client member mobile_api provider tas" | sudo tee -a /etc/hosts
+    ansible.builtin.shell: echo "127.0.0.1 admin callcenter client member mobile_api provider tas" | sudo tee -a /etc/hosts
