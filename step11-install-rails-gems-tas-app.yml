@@ -48,13 +48,41 @@
   # for LibreSSL version 3.*
   - name: for LibreSSL version 3.* (brew upgrade)
     ansible.builtin.shell: brew upgrade libressl
-    when: opensslversion.stdout_lines is match("\\['libreSSL 3.")
+    when: opensslversion.stdout_lines is match("\\['LibreSSL 3.")
 
   - name: for LibreSSL version 3.* (ln -sf)
     ansible.builtin.shell: ln -sf /usr/local/etc/libressl/cert.pem ~/.asdf/installs/ruby/2.3.6/openssl/ssl/cert.pem
-    when: opensslversion.stdout_lines is match("\\['libreSSL 3.")
+    when: opensslversion.stdout_lines is match("\\['LibreSSL 3.")
   
+  # for OpenSSL version 1.1*
+  - name: for openssl version 1.1* (brew upgrade openssl@1.1)
+    ansible.builtin.shell: brew upgrade openssl@1.1
+    when: opensslversion.stdout_lines is match("\\['OpenSSL 1.1")
+
+  - name: for openssl version 1.1* (ln -sf)
+    ansible.builtin.shell: ln -sf /usr/local/etc/ca-certificates/cert.pem ~/.asdf/installs/ruby/2.3.6/openssl/ssl/cert.pem
+    when: opensslversion.stdout_lines is match("\\['OpenSSL 1.1")
+
+  # for OpenSSL version 3.*
+  - name: for OpenSSL version 3.* (brew upgrade openssl@3)
+    ansible.builtin.shell: brew upgrade openssl@3
+    when: opensslversion.stdout_lines is match("\\['OpenSSL 3.")
+
+  - name: for OpenSSL version 3.* (ln -sf)
+    ansible.builtin.shell: ln -sf /usr/local/etc/openssl@3/cert.pem ~/.asdf/installs/ruby/2.3.6/openssl/ssl/cert.pem
+    when: opensslversion.stdout_lines is match("\\['OpenSSL 3.")
+
+  # where am I? pwd
+  - name: get directory
+    ansible.builtin.shell: pwd
+    register: iamhere
+
+  - name: print iamhere
+    ansible.builtin.debug:
+      msg: I am here {{ iamhere }}
+
   - name: bundle install
     ansible.builtin.shell: bundle install
 
   # ~/Users/michael.le/Documents/projetdoccts/telapp/tas
+  # error, not in right directory
