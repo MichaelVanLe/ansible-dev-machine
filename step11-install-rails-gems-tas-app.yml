@@ -24,6 +24,37 @@
   
   # install rails and gems for your repos
   - name: cd to repo
-  cd repo_name # e.g. telapp/tas
+    ansible.builtin.shell: cd ~/Documents/tdoc/telapp/tas # e.g. telapp/tas
+
+  # Could not verify the SSL certificate
+  # solution - https://confluence.teladoc.net/display/TDOC/Developer+Machine+Setup#DeveloperMachineSetup-1.RubySSLError(LibreSSL/OpenSSL)
+  - name: openssl version
+    ansible.builtin.shell: openssl version
+    register: opensslversion
+
+  - name: print openssl version
+    ansible.builtin.debug: 
+      msg: openssl version {{ opensslversion.stdout_lines }}
+
+  # for LibreSSL version 2.*
+  - name: for libreSSL version 2.* (brew install)
+    ansible.builtin.shell: brew install libressl
+    when: opensslversion.stdout_lines is match("\\['LibreSSL 2.")
+
+  - name: for libreSSL version 2.* (ln -sf)
+    ansible.builtin.shell: ln -sf /usr/local/etc/libressl/cert.pem ~/.asdf/installs/ruby/2.3.6/openssl/ssl/cert.pem
+    when: opensslversion.stdout_lines is match("\\['LibreSSL 2.")
+
+  # for LibreSSL version 3.*
+  - name: for LibreSSL version 3.* (brew upgrade)
+    ansible.builtin.shell: brew upgrade libressl
+    when: opensslversion.stdout_lines is match("\\['libreSSL 3.")
+
+  - name: for LibreSSL version 3.* (ln -sf)
+    ansible.builtin.shell: ln -sf /usr/local/etc/libressl/cert.pem ~/.asdf/installs/ruby/2.3.6/openssl/ssl/cert.pem
+    when: opensslversion.stdout_lines is match("\\['libreSSL 3.")
   
-  bundle install
+  - name: bundle install
+    ansible.builtin.shell: bundle install
+
+  # ~/Users/michael.le/Documents/projetdoccts/telapp/tas
