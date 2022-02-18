@@ -24,7 +24,16 @@
   
   # install rails and gems for your repos
   - name: cd to repo
-    ansible.builtin.shell: cd ~/Documents/tdoc/telapp/tas # e.g. telapp/tas
+    ansible.builtin.shell: cd ~/Documents/tdoc/telapp/tas
+
+  # where am I? pwd
+  - name: get directory
+    ansible.builtin.shell: pwd
+    register: iamhere
+
+  - name: print iamhere
+    ansible.builtin.debug:
+      msg: I am here {{ iamhere.stdout_lines }}
 
   # Could not verify the SSL certificate
   # solution - https://confluence.teladoc.net/display/TDOC/Developer+Machine+Setup#DeveloperMachineSetup-1.RubySSLError(LibreSSL/OpenSSL)
@@ -72,17 +81,18 @@
     ansible.builtin.shell: ln -sf /usr/local/etc/openssl@3/cert.pem ~/.asdf/installs/ruby/2.3.6/openssl/ssl/cert.pem
     when: opensslversion.stdout_lines is match("\\['OpenSSL 3.")
 
-  # where am I? pwd
-  - name: get directory
-    ansible.builtin.shell: pwd
-    register: iamhere
-
   - name: print iamhere
     ansible.builtin.debug:
-      msg: I am here {{ iamhere }}
+      msg: I am here {{ iamhere.stdout_lines }}
 
   - name: bundle install
     ansible.builtin.shell: bundle install
+    args:
+      # chdir will change to this directory before running command
+      chdir: ~/Documents/tdoc/telapp/tas
 
   # ~/Users/michael.le/Documents/projetdoccts/telapp/tas
   # error, not in right directory
+
+  # use this to search for where telapp/tas is
+  # find <directory> -wholename <repo>
