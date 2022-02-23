@@ -1,0 +1,17 @@
+# Step 7: clone telapp repo
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/file_module.html
+  # Use ansible.builtin.file to mkdir
+  # https://www.mydailytutorials.com/ansible-create-directory/
+- hosts: localhost
+
+  tasks: 
+  - name: create new directory
+    ansible.builtin.file:
+      path: ~/teladoc
+      state: directory
+
+  - name: clone telapp repo
+    ansible.builtin.shell: git clone git@github.com:Teladoc/telapp.git
+    # changes director to ~/teladoc prior to above cloning
+    args:
+      chdir: ~/teladoc

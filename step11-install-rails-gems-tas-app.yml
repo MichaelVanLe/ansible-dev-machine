@@ -96,3 +96,4 @@
 
   # use this to search for where telapp/tas is
   # find <directory> -wholename <repo>
+  # find /Users/ -wholename "*telapp/tas"
