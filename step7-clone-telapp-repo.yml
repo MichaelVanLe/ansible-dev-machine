@@ -12,6 +12,8 @@
 
   - name: clone telapp repo
     ansible.builtin.shell: git clone git@github.com:Teladoc/telapp.git
+    register: clonetelapp
     # changes director to ~/teladoc prior to above cloning
     args:
       chdir: ~/teladoc
+    failed_when: "'already exists' not in clonetelapp.stderr"
